@@ -2,75 +2,75 @@
 \section{Introduction}
 \label{sec:intro}
 
-Opening a bank account used to mean visiting a branch with an identity document. Today most
-banks and mobile wallets let customers apply from a phone in a few minutes, and digital channels
-now carry most everyday payments. In Pakistan, for example, the State Bank of Pakistan reports
-that 88\% of retail transactions in FY2024--25 went through digital channels, and that payments
-made through banking, branchless banking and e-money wallet apps grew by 52\% to about
-6.2 billion transactions in the same year \cite{sbp2025payment}. The same convenience is used by
-fraudsters. In account opening fraud, a person applies with a stolen or made-up identity, gets the
-account approved, and then uses it to receive illegal payments or to use up the credit line that
-comes with it. Because the real owner of the identity is unknown, the loss usually stays with the
-bank \cite{jesus2022turning}. The wider scale of identity-related fraud is large: the U.S. Federal
-Trade Commission received more than 1.1 million identity theft reports in 2024, and consumers
-reported losing over \$12.5 billion to fraud that year \cite{ftc2025sentinel}.
+Opening a bank account used to mean going to a branch with an identity card. Now most banks and
+mobile wallets let people apply from their phone in a few minutes, and most everyday payments have
+moved to digital channels. In Pakistan, the State Bank of Pakistan reports that 88\% of retail
+transactions in FY2024--25 were digital, and that payments made through banking, branchless banking
+and e-money wallet apps grew by 52\% to about 6.2 billion transactions in the same year
+\cite{sbp2025payment}. Fraudsters use this convenience too. In account opening fraud, someone
+applies with a stolen or made-up identity, gets the account approved, and then uses it to receive
+illegal money or to spend the credit line that comes with it. Since the real owner of the identity
+cannot be traced, the bank usually carries the loss \cite{jesus2022turning}. The problem is not a
+small one: in 2024 the U.S. Federal Trade Commission received more than 1.1 million identity theft
+reports, and consumers reported losing over \$12.5 billion to fraud \cite{ftc2025sentinel}.
 
-Banks therefore screen new applications with machine learning (ML) models that give each
-application a risk score and send the riskiest ones for rejection or manual review. Building such a
-model is harder than a normal classification task for three reasons. First, fraud is rare. In the
-data used in this paper only about one application in a hundred is fraudulent, so a model that never
-flags anyone is already 99\% accurate, and accuracy says almost nothing about how much fraud is
-caught. Second, fraud changes over time. Fraudsters adapt to the controls they meet, and the mix of
-genuine customers also shifts from month to month, so a model that looks good on the months it was
-trained on can be weaker on the months that follow \cite{dalpozzolo2018credit}. Third, the decision
-affects people. A false positive here means a genuine customer is refused a bank account, which is
-a basic financial service, and if a model makes this mistake more often for one age group than for
-another the harm is not spread evenly \cite{jesus2022turning}.
+To deal with this, banks score every new application with a machine learning (ML) model and send
+the riskiest ones for rejection or manual review. Building such a model is harder than a normal
+classification task, for three reasons. The first is that fraud is rare. In our data only about one
+application in a hundred is fraud, so a model that never flags anyone is already 99\% accurate while
+catching nothing. The second is that fraud changes over time. Fraudsters adapt to the checks they
+run into, and genuine customers also change from month to month, so a model that does well on its
+training months can be weaker on the months that follow \cite{dalpozzolo2018credit}. The third is
+that the decision affects people. A false positive here means an honest customer is refused a bank
+account, and if this happens more often to one age group than to another, the harm is not shared
+equally \cite{jesus2022turning}.
 
-Much of the published work on fraud detection does not reflect these three problems. Many studies
-use public credit card transaction data and give accuracy as a headline result, even though the
+A lot of the published work on fraud detection does not take these problems into account. Many
+studies use public credit card data and report accuracy as their main result, even though the
 classes are extremely imbalanced \cite{alarfaj2022credit, taha2020intelligent}. Others split the
-data at random and classify at the default 0.5 threshold; a recent study on bank account opening
-data did both \cite{sun2025objective}. A random split mixes later months into training, so it hides
-any drop caused by change over time, and a fixed 0.5 threshold does not match how a bank actually
-operates, which is with a limited budget of false alarms. The Bank Account Fraud (BAF) suite released by
-Jesus~\textit{et al.}~\cite{jesus2022turning} makes a more realistic study possible. It contains one
-million synthetic but realistic account applications over eight months, a month column for
-time-based evaluation, and protected attributes such as age. The original paper trained LightGBM
-models on the first six months, tested on the last two, and reported the true positive rate at a
-5\% false positive rate together with a fairness measure between age groups. However, it set the
-5\% threshold on the test months themselves and left a separate validation split for the threshold
-as future work, and it did not compare different model families under the same protocol.
+data randomly and classify at the default 0.5 threshold, and a recent study on bank account opening
+data did both \cite{sun2025objective}. A random split mixes later months into the training data,
+which hides any drop caused by change over time. A fixed 0.5 threshold also does not match how a
+bank works in practice, since it can only afford a limited number of false alarms. The Bank Account
+Fraud (BAF) suite released by Jesus~\textit{et al.}~\cite{jesus2022turning} makes a more realistic
+study possible. It has one million synthetic but realistic applications over eight months, a month
+column for time-based evaluation, and protected attributes such as age. The original paper trained
+LightGBM models on the first six months, tested them on the last two, and reported the true positive
+rate at a 5\% false positive rate together with a fairness measure between age groups. It did,
+however, set the 5\% threshold on the test months themselves, left a separate validation split for
+the threshold as future work, and did not compare different model families under the same protocol.
 
 In this paper we compare a majority-class baseline, a logistic regression scorecard and four ML
-models from two families (random forest, LightGBM, CatBoost and a multilayer perceptron) on the
-BAF Base dataset, using a strictly time-based protocol. We answer three research questions:
+models from two families (random forest, LightGBM, CatBoost and a multilayer perceptron) on the BAF
+Base dataset, using a strictly time-based protocol. We try to answer three research questions:
 \begin{itemize}
   \item \textbf{RQ1:} Which model catches the most fraud at a fixed 5\% false positive rate?
   \item \textbf{RQ2:} How much does performance drop from the training months to the two test months?
   \item \textbf{RQ3:} Does the best model flag applicants over 50 at a different false positive rate
-        from younger applicants, and what does correcting it cost?
+        from younger applicants, and what does it cost to correct this?
 \end{itemize}
 
-The main contributions of this work are as follows:
+Our main contributions are:
 \begin{enumerate}
-  \item A leakage-free, time-based evaluation protocol for BAF: hyperparameters are tuned with
-        five forward-chaining folds over months 0--5, the 5\% FPR threshold is fixed on month 5,
-        and months 6 and 7 are used only once, for the final test.
-  \item A comparison of six models under the same folds, preprocessing, tuning budget and metrics,
-        reported as mean $\pm$ standard deviation over folds and month by month on the test period.
-  \item A measurement of performance drift, including how far the false positive rate moves away
-        from its 5\% target once the threshold chosen on earlier data is applied to later months.
-  \item A fairness analysis of the false positive rate ratio between applicants over 50 and the rest,
-        with the cost in recall of two corrections (group-specific thresholds and reweighing).
+  \item A time-based evaluation protocol for BAF without leakage. Hyperparameters are tuned on five
+        forward-chaining folds over months 0--5, the 5\% FPR threshold is fixed on month 5, and
+        months 6 and 7 are used only once, for the final test.
+  \item A comparison of six models with the same folds, preprocessing, tuning budget and metrics,
+        reported as mean $\pm$ standard deviation over the folds and month by month on the test
+        period.
+  \item A measurement of performance drift, including how far the false positive rate moves from
+        its 5\% target when a threshold chosen on earlier data is used on later months.
+  \item A fairness analysis of the false positive rate ratio between applicants over 50 and the
+        rest, with the cost in recall of two corrections (group-specific thresholds and reweighing).
   \item An ablation study over six feature groups and two preprocessing steps, an error analysis of
         missed fraud cases, and a public repository that reproduces every number in the paper.
 \end{enumerate}
 
 The rest of the paper is organised as follows. Section~\ref{sec:related} reviews related work on
 fraud detection, concept drift and algorithmic fairness. Section~\ref{sec:dataset} describes the
-dataset. Section~\ref{sec:method} explains the time-based validation and the full methodology.
-Section~\ref{sec:results} presents the results, Section~\ref{sec:fairness} the fairness analysis
-and Section~\ref{sec:ablation} the ablation and error analysis. Section~\ref{sec:discussion}
-discusses the findings and their limits, and Section~\ref{sec:conclusion} concludes.
+dataset, and Section~\ref{sec:method} explains the time-based validation and the rest of the
+methodology. Section~\ref{sec:results} gives the results, Section~\ref{sec:fairness} the fairness
+analysis and Section~\ref{sec:ablation} the ablation and error analysis.
+Section~\ref{sec:discussion} discusses what we found and its limits, and
+Section~\ref{sec:conclusion} concludes.
 % NOTE for the group: check the \label names match the ones used in your sections.
