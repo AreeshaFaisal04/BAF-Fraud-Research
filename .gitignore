@@ -1,0 +1,11 @@
+data/*.csv
+data/*.parquet
+data/*.zip
+__pycache__/
+*.pyc
+.venv/
+.ipynb_checkpoints/
+paper/*.aux
+paper/*.log
+paper/*.bbl
+paper/*.blg
