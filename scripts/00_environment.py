@@ -1,7 +1,5 @@
-"""
-Saves the software versions and hardware used for the run (for the Methodology section).
-    python scripts/00_environment.py
-"""
+# saves the library versions and the machine info
+# python scripts/00_environment.py
 import sys
 from pathlib import Path
 

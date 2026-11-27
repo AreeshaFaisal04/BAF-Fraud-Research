@@ -1,7 +1,5 @@
-"""
-Draws the pipeline diagram used in the Methodology section.
-    python scripts/pipeline_diagram.py
-"""
+# draws the pipeline diagram for the methodology section
+# python scripts/pipeline_diagram.py
 import sys
 from pathlib import Path
 

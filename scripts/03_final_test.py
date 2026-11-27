@@ -1,13 +1,6 @@
-"""
-Final run with the best hyperparameters from 02_tune_cv.py:
-fit on months 0-4, threshold at 5% FPR on month 5, evaluate months 6 and 7.
-
-    python scripts/03_final_test.py --model logreg
-
-Outputs (in outputs/tables):
-    test_<model>.csv          metrics per split (month 5, month 6, month 7, months 6-7)
-    test_scores_<model>.csv   score of every test application (for fairness / error analysis)
-"""
+# final run with the best params: train on months 0-4, threshold on month 5, test on months 6 and 7
+# python scripts/03_final_test.py --model logreg
+# saves test_<model>.csv and test_scores_<model>.csv
 import sys
 from pathlib import Path
 

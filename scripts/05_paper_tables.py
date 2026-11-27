@@ -1,9 +1,5 @@
-"""
-Turns the CSV/JSON outputs into the LaTeX tables used in the paper (paper/tables/).
-Run after 01-04. Numbers are never typed by hand.
-
-    python scripts/05_paper_tables.py
-"""
+# makes the latex tables for the paper from the result files
+# python scripts/05_paper_tables.py
 import sys
 from pathlib import Path
 
@@ -68,7 +64,6 @@ for m, rows in RANGES.items():
         name = NAMES[m] if i == 0 else ""
         lines.append(f"{name} & {label} & {rng} & {fmt(best.get(key, '--'))} \\\\")
     lines.append(r"\hline")
-lines.append(r"% Members 2 and 3: add LightGBM, CatBoost and MLP rows here (or regenerate with this script).")
 lines += [r"\end{tabular}", r"\end{table}"]
 (OUT / "tuning_table.tex").write_text("\n".join(lines) + "\n")
 
@@ -86,7 +81,7 @@ for g, cols in FEATURE_GROUPS.items():
 lines += [r"\hline", r"\end{tabular}", r"\end{table}"]
 (OUT / "feature_groups.tex").write_text("\n".join(lines) + "\n")
 
-# ---------------- Member 1 results (CV + test) ----------------
+# ---------------- baseline results (CV + test) ----------------
 order = [("majority", "Majority class"), ("logreg", "Logistic regression"), ("rf", "Random forest")]
 lines = [r"\begin{table*}[!t]", r"\centering",
          r"\caption{Baselines and random forest: mean $\pm$ std over the five validation folds, and the "

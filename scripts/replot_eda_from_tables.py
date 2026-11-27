@@ -1,9 +1,5 @@
-"""
-Re-draws the EDA figures from the summary tables that 01_eda.py saved
-(outputs/tables/eda_*.csv), so the figures can be remade without the 200 MB data file.
-
-    python scripts/replot_eda_from_tables.py
-"""
+# redraws the eda plots from the saved csv tables (so the big data file is not needed)
+# python scripts/replot_eda_from_tables.py
 import sys
 from pathlib import Path
 

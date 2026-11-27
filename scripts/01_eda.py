@@ -1,9 +1,5 @@
-"""
-Exploratory analysis of the BAF Base dataset.
-Writes summary tables to outputs/tables and figures to outputs/figures.
-
-    python scripts/01_eda.py
-"""
+# EDA of the BAF Base dataset (tables go to outputs/tables, plots to outputs/figures)
+# python scripts/01_eda.py
 import sys
 from pathlib import Path
 
@@ -27,7 +23,7 @@ use_paper_style()
 raw = load_raw()
 print("shape:", raw.shape)
 
-# ---------- 1. basic checks (also used to confirm we have the right file) ----------
+# ---------- 1. basic checks ----------
 overview = {
     "rows": int(len(raw)),
     "columns": int(raw.shape[1]),
@@ -50,7 +46,7 @@ ranges = pd.DataFrame({"min": raw[num_cols].min(), "max": raw[num_cols].max(),
                        "n_unique": raw[num_cols].nunique()})
 ranges.to_csv(TAB_DIR / "eda_column_ranges.csv")
 
-# negative values in columns the datasheet does NOT call missing
+# negative values in columns where they are not missing codes
 for c in ["velocity_6h", "credit_risk_score"]:
     print(f"{c}: {(raw[c] < 0).sum()} negative values ({(raw[c] < 0).mean():.4%})")
 

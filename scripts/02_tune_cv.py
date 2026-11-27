@@ -1,15 +1,6 @@
-"""
-Random search (N_TRIALS configs) on the 5 forward-chaining folds for one model.
-
-    python scripts/02_tune_cv.py --model logreg
-    python scripts/02_tune_cv.py --model rf
-    python scripts/02_tune_cv.py --model majority
-
-Outputs (in outputs/tables):
-    cv_trials_<model>.csv   every trial with its mean ± std
-    cv_folds_<model>.csv    fold-by-fold scores of the best trial (for the box plot)
-    best_params_<model>.json
-"""
+# random search for one model on the 5 folds
+# python scripts/02_tune_cv.py --model logreg
+# saves cv_trials_<model>.csv, cv_folds_<model>.csv and best_params_<model>.json
 import sys
 from pathlib import Path
 

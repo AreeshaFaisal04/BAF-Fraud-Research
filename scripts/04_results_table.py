@@ -1,13 +1,5 @@
-"""
-Collects every model that has been run into the main results table
-(mean ± std over the 5 folds + test months 6 and 7).
-
-    python scripts/04_results_table.py
-
-Writes outputs/tables/results_table.csv, .md and .tex
-It picks up any model with cv_folds_<model>.csv, so Members 2 and 3 just run
-their models and then run this again.
-"""
+# puts every model that has results into one table (cv mean ± std + test months)
+# python scripts/04_results_table.py
 import sys
 from pathlib import Path
 
