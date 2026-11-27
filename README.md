@@ -3,7 +3,7 @@
 ML term project (Topic 9), Kinnaird College for Women University, Fall 2026.
 Dataset: Bank Account Fraud (BAF) suite, Base variant (Jesus et al., NeurIPS 2022).
 
-> Group members: _add names and roll numbers_ · Instructor: Dr. Sidra Zafar
+> Group members: Sidra Jahangir, Areesha Faisal Rayha Azim · Instructor: Dr. Sidra Zafar
 
 ## What this repository does
 
@@ -94,20 +94,4 @@ outputs/
 paper/           LaTeX sections, tables and references for Overleaf
 ```
 
-## For Members 2 and 3: adding a model
 
-1. In `src/models.py` write `make_<name>(params, seed)` returning an estimator with `predict_proba`, add a search space dict, and register it in `MODELS` (set the third value to `True` if it needs scaling).
-2. Run `python scripts/02_tune_cv.py --model <name>` then `python scripts/03_final_test.py --model <name>`.
-3. Re-run `python scripts/04_results_table.py`. The fold scores in `outputs/tables/cv_folds_<name>.csv` are what the box plot needs, and `test_scores_<name>.csv` has every test-month score for the fairness and error analysis (`row` = position in the cleaned dataframe).
-
-Do **not** change `src/config.py`, `src/folds.py`, `src/preprocess.py` or `src/metrics.py` without telling the group, otherwise the comparison is no longer fair.
-
-## Notes on the data
-
-- `-1` means missing in `prev_address_months_count`, `current_address_months_count`, `bank_months_count`, `session_length_in_minutes`, `device_distinct_emails_8w`; any negative value means missing in `intended_balcon_amount` (BAF datasheet).
-- `month` is used only for splitting, never as a feature. `device_fraud_count` is constant in the Base file and is dropped.
-- Age groups for fairness: `customer_age > 50` vs `<= 50`, as in the BAF paper.
-
-## Licence
-
-Code: MIT. Data: BAF suite, CC BY-NC-ND 4.0 (not redistributed here).
