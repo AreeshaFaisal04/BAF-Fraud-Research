@@ -1,10 +1,5 @@
-"""
-Metric functions shared by the whole group.
-
-Main metric (as in the BAF paper): recall (TPR) at a 5% false positive rate.
-The threshold is the score above which only 5% of the legitimate (negative)
-applications fall.
-"""
+# metrics
+# main metric is recall at 5% false positive rate (same as the BAF paper)
 import numpy as np
 from sklearn.metrics import roc_auc_score, average_precision_score
 
@@ -12,7 +7,7 @@ from .config import FPR_TARGET
 
 
 def threshold_at_fpr(y_true, scores, fpr=FPR_TARGET):
-    """Threshold t such that flagging `score > t` gives FPR <= fpr on these rows."""
+    # threshold where only fpr (5%) of the non-fraud rows have a higher score
     y_true = np.asarray(y_true)
     neg_scores = np.asarray(scores)[y_true == 0]
     return float(np.quantile(neg_scores, 1 - fpr, method="higher"))
@@ -29,11 +24,9 @@ def confusion_at(y_true, scores, thr):
 
 
 def evaluate(y_true, scores, thr=None, fpr=FPR_TARGET):
-    """
-    All the metrics we report. If thr is None the threshold is set on these
-    same rows to hit exactly `fpr` (used for CV folds, it measures ranking quality).
-    For the test months pass the threshold chosen on the threshold month instead.
-    """
+    # all the metrics
+    # if thr is None the threshold is set on the same rows (used for the cv folds)
+    # for the test months the threshold from month 5 is passed in
     y_true = np.asarray(y_true)
     scores = np.asarray(scores)
     if thr is None:

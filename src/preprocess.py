@@ -1,7 +1,4 @@
-"""
-Preprocessing. Everything here is a sklearn transformer, so it is fitted
-inside each fold on the training rows only (no leakage from validation/test).
-"""
+# preprocessing (sklearn pipeline, so it is only fitted on the training rows of each fold)
 import numpy as np
 from sklearn.compose import ColumnTransformer
 from sklearn.impute import SimpleImputer
@@ -12,13 +9,9 @@ from .data import numeric_features, categorical_features
 
 
 def build_preprocessor(features, scale=True, missing_indicators=True):
-    """
-    numeric  -> median imputation (+ 0/1 'was missing' column) -> optional scaling
-    categorical -> one-hot (unknown categories at test time are ignored)
-
-    scale=True for logistic regression / MLP, trees don't need it.
-    missing_indicators=False is one of the ablation settings.
-    """
+    # numbers: fill missing values with the median + add a 0/1 missing column, scale if needed
+    # categories: one-hot encoding
+    # scaling is only needed for logistic regression and the MLP
     num = numeric_features(features)
     cat = categorical_features(features)
 
@@ -34,8 +27,7 @@ def build_preprocessor(features, scale=True, missing_indicators=True):
 
 
 def downsample_negatives(X, y, frac, seed):
-    """Keeps all fraud rows and a random `frac` of the non-fraud rows.
-    Only ever called on TRAINING rows."""
+    # keep all fraud rows and a random part of the non-fraud rows (only used on training data)
     if frac >= 1.0:
         return X, y
     rng = np.random.default_rng(seed)

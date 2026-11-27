@@ -1,6 +1,4 @@
-"""
-Loading and cleaning the BAF Base dataset + the feature groups.
-"""
+# loading and cleaning the data + the feature groups
 import os
 
 import numpy as np
@@ -8,7 +6,7 @@ import pandas as pd
 
 from .config import DATA_DIR, TARGET, MONTH_COL
 
-# columns where the datasheet says -1 means "missing"
+# in these columns -1 means missing (datasheet)
 NEG1_MISSING = [
     "prev_address_months_count",
     "current_address_months_count",
@@ -16,15 +14,15 @@ NEG1_MISSING = [
     "session_length_in_minutes",
     "device_distinct_emails_8w",
 ]
-# here ANY negative value means missing (datasheet)
+# here any negative value means missing
 NEGATIVE_MISSING = ["intended_balcon_amount"]
 
 CATEGORICAL = ["payment_type", "employment_status", "housing_status", "source", "device_os"]
 
-# never used as model inputs
-DROP_ALWAYS = [MONTH_COL, "device_fraud_count"]  # month = split only, device_fraud_count = constant 0
+# not used as features
+DROP_ALWAYS = [MONTH_COL, "device_fraud_count"]  # month is only for the split, device_fraud_count is always 0
 
-# Every usable feature is in exactly one group (needed for the ablation study)
+# each feature is in exactly one group (for the ablation)
 FEATURE_GROUPS = {
     "applicant": ["income", "customer_age", "employment_status", "housing_status"],
     "address": ["prev_address_months_count", "current_address_months_count"],
@@ -40,9 +38,9 @@ ALL_FEATURES = [f for g in FEATURE_GROUPS.values() for f in g]
 
 
 def load_raw(path=None):
-    """Reads Base.csv (or Base.parquet if that is what you downloaded)."""
+    # reads Base.csv or Base.parquet
     if path is None and os.environ.get("BAF_DATA"):
-        path = os.environ["BAF_DATA"]   # set by the Colab notebook
+        path = os.environ["BAF_DATA"]   # path set in the colab notebook
     if path is None:
         pq = DATA_DIR / "Base.parquet"
         path = pq if pq.exists() else DATA_DIR / "Base.csv"
@@ -53,8 +51,7 @@ def load_raw(path=None):
 
 
 def clean(df):
-    """Turns the coded missing values into NaN. Nothing is fitted here,
-    so it is safe to run on the whole file before splitting."""
+    # change the missing value codes to NaN (nothing is learned here so it is ok before splitting)
     df = df.copy()
     for c in NEG1_MISSING:
         df[c] = df[c].where(df[c] != -1)      # becomes float with NaN
@@ -67,7 +64,7 @@ def clean(df):
 
 def load_clean(path=None):
     df = clean(load_raw(path))
-    # sanity check: the groups must cover every column except target/month/dropped ones
+    # check that every column is in a group
     leftover = set(df.columns) - set(ALL_FEATURES) - {TARGET} - set(DROP_ALWAYS)
     assert not leftover, f"columns not in any feature group: {leftover}"
     assert len(ALL_FEATURES) == len(set(ALL_FEATURES)), "a feature is in two groups"
@@ -83,7 +80,7 @@ def categorical_features(features):
 
 
 def features_without(groups_to_drop=(), extra_drop=()):
-    """Feature list with some groups (and/or single columns) removed - for ablation."""
+    # feature list without some groups (for the ablation)
     out = []
     for g, cols in FEATURE_GROUPS.items():
         if g in groups_to_drop:

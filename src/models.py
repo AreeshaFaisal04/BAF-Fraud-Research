@@ -1,11 +1,4 @@
-"""
-Model definitions + random-search spaces.
-
-To add a model (Members 2 and 3): write a make_<name>(params, seed) function that
-returns an sklearn-style estimator with predict_proba, add its search space,
-and register both in MODELS at the bottom. Nothing else needs to change -
-scripts/02_tune_cv.py and scripts/03_final_test.py will then work for it.
-"""
+# models and their random search spaces
 from scipy.stats import loguniform, randint, uniform
 from sklearn.dummy import DummyClassifier
 from sklearn.ensemble import RandomForestClassifier
@@ -22,7 +15,7 @@ def make_majority(params, seed):
 def make_logreg(params, seed):
     return LogisticRegression(
         C=params["C"],
-        class_weight="balanced",   # class weights fixed on (removed only in the ablation)
+        class_weight="balanced",   # fraud class gets more weight
         max_iter=2000,
         solver="lbfgs",
         random_state=seed,
@@ -54,15 +47,13 @@ RF_SPACE = {
     "max_depth": [8, 12, 16, 20, 24],
     "min_samples_leaf": [1, 5, 10, 25, 50, 100],
     "max_features": ["sqrt", 0.2, 0.33],
-    "max_samples": uniform(0.05, 0.25),  # 5% - 30% of the training rows per tree (keeps 100 fits affordable on 2 cores)
+    "max_samples": uniform(0.05, 0.25),  # each tree uses 5-30% of the rows (otherwise too slow on colab)
 }
 
 
-# name -> (factory, search space or None, needs scaling?)
+# name: (function, search space, needs scaling)
 MODELS = {
     "majority": (make_majority, None, False),
     "logreg": (make_logreg, LOGREG_SPACE, True),
     "rf": (make_rf, RF_SPACE, False),
-    # Member 2: "lightgbm": (make_lightgbm, LGBM_SPACE, False), "catboost": (...)
-    # Member 3: "mlp": (make_mlp, MLP_SPACE, True)
 }

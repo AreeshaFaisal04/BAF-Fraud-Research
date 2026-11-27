@@ -1,4 +1,4 @@
-"""Common look for all paper figures (so every member's plots match)."""
+# colors and settings for all the plots
 import matplotlib as mpl
 import matplotlib.pyplot as plt
 

@@ -1,7 +1,4 @@
-"""
-Running one configuration through the 5 forward-chaining folds,
-random search over N_TRIALS configurations, and the final test run.
-"""
+# cross validation on the 5 folds, random search and the final test
 import time
 
 import numpy as np
@@ -35,7 +32,7 @@ def fit_predict(model_name, params, df, train_idx, pred_idx, features,
 
 
 def run_cv(model_name, params, df, features=ALL_FEATURES, **kw):
-    """One row of metrics per fold."""
+    # one row of metrics for each fold
     rows = []
     for k, tr, va in forward_chaining_folds(df):
         t0 = time.time()
@@ -47,7 +44,7 @@ def run_cv(model_name, params, df, features=ALL_FEATURES, **kw):
 
 
 def random_search(model_name, df, n_trials=N_TRIALS, seed=SEED, log=print):
-    """Random search; the score of a trial = mean recall at 5% FPR over the 5 folds."""
+    # random search, best trial = highest mean recall at 5% FPR over the 5 folds
     _, space, _ = MODELS[model_name]
     if space is None:  # nothing to tune (majority class)
         candidates = [{}]
@@ -78,10 +75,7 @@ def random_search(model_name, df, n_trials=N_TRIALS, seed=SEED, log=print):
 
 
 def final_test(model_name, params, df, features=ALL_FEATURES, **kw):
-    """
-    Fit on months 0-4, pick the 5%-FPR threshold on month 5, then score months 6 and 7
-    with that fixed threshold. Returns metrics table and the test scores.
-    """
+    # train on months 0-4, pick the threshold on month 5, then test on months 6 and 7
     idx = final_split(df)
     pred_idx = np.concatenate([idx["threshold"], idx["test_m6_7"]])
     pipe, scores = fit_predict(model_name, params, df, idx["fit"], pred_idx, features, **kw)
