@@ -1,0 +1,2 @@
+trial,recall_at_5fpr_mean,recall_at_5fpr_std,roc_auc_mean,roc_auc_std,pr_auc_mean,pr_auc_std,f1_mean,f1_std,seconds
+1,0.0,0.0,0.5,0.0,0.010110361705177545,0.0013877130925708126,0.0,0.0,6.700000000000001

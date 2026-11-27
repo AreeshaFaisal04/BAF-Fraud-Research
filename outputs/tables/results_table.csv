@@ -1,0 +1,4 @@
+model,CV Recall@5%FPR,CV ROC-AUC,CV PR-AUC,CV F1,Test M6 Recall@5%FPR,Test M7 Recall@5%FPR,Test M6-7 FPR,Test M6-7 ROC-AUC
+Majority class,0.000 ± 0.000,0.500 ± 0.000,0.010 ± 0.001,0.000 ± 0.000,0.000,0.000,0.000,0.500
+Logistic regression,0.516 ± 0.020,0.887 ± 0.014,0.134 ± 0.018,0.161 ± 0.018,0.522,0.441,0.046,0.881
+Random forest,0.503 ± 0.022,0.881 ± 0.018,0.125 ± 0.018,0.157 ± 0.020,0.521,0.496,0.048,0.880
