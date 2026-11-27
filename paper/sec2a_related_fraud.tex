@@ -1,0 +1,66 @@
+% ============ Section II-A: Related work -- Fraud detection (Member 1) ============
+% Goes inside Section II (Related Work). Member 2 writes II-B (concept drift),
+% Member 3 writes II-C (algorithmic fairness); the summary table and the final
+% "research gap" paragraph are joint.
+\section{Related Work}
+\label{sec:related}
+
+\subsection{Fraud Detection with Machine Learning}
+\label{sec:related-fraud}
+
+\textit{Surveys.} Financial fraud detection has been reviewed many times. Al-Hashedi and
+Magalingam \cite{alhashedi2021financial} reviewed data mining studies from 2009 to 2019 and grouped
+them by fraud type and technique; credit card fraud was the most studied type. A later systematic
+review by Ali~\textit{et al.} \cite{ali2022financial} reached the same conclusion and found support
+vector machines and neural networks to be the most common models. Hilal~\textit{et al.}
+\cite{hilal2022financial} focused on anomaly detection and on semi-supervised and unsupervised
+methods, which are useful when labels are scarce. All three reviews point out that public data
+for fraud research is limited, which is why many papers end up using the same few datasets.
+
+\textit{Supervised models on transaction data.} Most recent supervised work uses credit card
+transactions, very often the public European cardholder dataset. Alarfaj~\textit{et al.}
+\cite{alarfaj2022credit} compared classical ML models with several convolutional neural networks on
+that dataset and reported 99.9\% accuracy and an F1-score of 85.71\% for their best deep model.
+Taha and Malebary \cite{taha2020intelligent} tuned LightGBM with Bayesian optimisation on two public
+card datasets and reported 98.40\% accuracy but an F1-score of only 56.95\%, which shows how far
+apart accuracy and fraud-focused metrics can be on imbalanced data. Zhao~\textit{et al.}
+\cite{zhao2024improved} changed the LightGBM loss to deal with extreme imbalance and combined it with
+oversampling. Gradient-boosted trees appear again and again in this line of work, which agrees with
+general benchmarks showing that tree ensembles still beat deep networks on typical tabular data
+\cite{grinsztajn2022tree, shwartzziv2022tabular}. The weakness shared by these studies is the evaluation:
+accuracy is given as a headline metric even though fraud is rare, and none of them reports how
+performance changes from one time period to the next.
+
+\textit{Realistic evaluation and feature design.} A smaller group of papers works with data from
+real fraud detection systems and tries to copy how they operate. Dal Pozzolo~\textit{et al.}
+\cite{dalpozzolo2018credit} described a fraud detection system with more than 75 million
+transactions over three years and showed that class imbalance, concept drift and delayed labels all
+have to be handled together; they also argued that alert precision, not accuracy, is what
+investigators care about. Carcillo~\textit{et al.} \cite{carcillo2021combining} added unsupervised
+outlier scores as extra features for a supervised model; some scores helped, but using many of
+them at once did not. Correa
+Bahnsen~\textit{et al.} \cite{bahnsen2016feature} showed that aggregated features, such as how many
+transactions a customer made in the last hours or days, add a lot to a fraud model. The BAF data
+contains the same kind of aggregated ``velocity'' features at the application level. These papers
+are close to our setting, but their data is private, so their results cannot be reproduced.
+
+\textit{Account opening fraud and the BAF suite.} Account opening fraud is studied much less than
+transaction fraud, mainly because no large public dataset existed before BAF
+\cite{jesus2022turning}. BAF was generated from a real bank's application data with a tabular
+generative model and extra noise for privacy, and it keeps the class imbalance, the monthly changes
+and the group differences of the original data. Its authors trained 100 LightGBM configurations with
+random search, trained on months 0--5 and tested on months 6--7, and reported the true positive rate
+at a 5\% false positive rate and the ratio of false positive rates between age groups. Sun~\textit{et
+al.} \cite{sun2025objective} compared logistic regression, an SVM, random forest, LightGBM and a GRU
+on the same Base dataset. At the 0.5 threshold the classical models caught only 1--6\% of fraud,
+while a class-weighted GRU caught 78\% with about 5\% precision. Their main point, that the training
+objective and the operating point matter as much as the model type, supports reporting results at a
+fixed false positive rate. However, they used a stratified random split instead of the month
+column, tuned the classical models on a 10{,}000-row sample, and did not look at fairness.
+
+\textit{Gap.} Taken together, the fraud detection literature either uses realistic but private
+data, or public data with random splits and accuracy-style metrics. On BAF, the only public
+account-opening benchmark, no study we found compares several model families under one time-based
+protocol in which the 5\% FPR threshold is chosen without looking at the test months. Our study
+fills this part of the gap; Sections~\ref{sec:related-drift} and \ref{sec:related-fair} cover the
+drift and fairness sides.

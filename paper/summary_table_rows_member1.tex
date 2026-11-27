@@ -1,0 +1,21 @@
+% Rows for the joint "closest studies" summary table in Section II (Member 1's share).
+% Columns: Study & Data & Method & Evaluation & Reported result \\
+% Members 2 and 3 add their rows (drift, fairness) so the table has 10-12 studies in total.
+\begin{table*}[!t]
+\centering
+\caption{Summary of the closest studies (fraud detection part; drift and fairness rows to be added).}
+\label{tab:related-summary}
+\footnotesize
+\begin{tabular}{p{2.0cm}p{3.0cm}p{3.6cm}p{3.6cm}p{3.6cm}}
+\hline
+\textbf{Study} & \textbf{Data} & \textbf{Method} & \textbf{Evaluation} & \textbf{Reported result} \\
+\hline
+Jesus \textit{et al.} 2022 \cite{jesus2022turning} & BAF suite (Base + 5 variants), 1M rows each & LightGBM, 100 random-search configs & Train months 0--5, test 6--7; TPR at 5\% FPR; FPR ratio by age & Benchmark of performance and fairness across variants \\
+Sun \textit{et al.} 2025 \cite{sun2025objective} & BAF Base & LR, SVM, RF, LightGBM, class-weighted GRU & Stratified random 80/20 split; 0.5 threshold & GRU: 78\% fraud recall, $\sim$5\% precision, AUC 0.88 \\
+Dal Pozzolo \textit{et al.} 2018 \cite{dalpozzolo2018credit} & 75M+ real card transactions (private), 3 years & Separate models for feedback and delayed labels, aggregated & Realistic alert-feedback setting; alert precision & Learning strategy handles imbalance, drift and verification latency \\
+Carcillo \textit{et al.} 2021 \cite{carcillo2021combining} & Real card transactions (private) & Unsupervised outlier scores added to supervised model & Real annotated data & Some outlier scores help; using many at once does not \\
+Taha \& Malebary 2020 \cite{taha2020intelligent} & Two public card datasets & LightGBM with Bayesian tuning & Accuracy, AUC, precision, F1 & Acc. 98.40\%, AUC 92.88\%, F1 56.95\% \\
+Alarfaj \textit{et al.} 2022 \cite{alarfaj2022credit} & European cardholder dataset & ML models vs. CNNs & Accuracy, precision, F1, AUC & Acc. 99.9\%, F1 85.71\%, AUC 98\% \\
+\hline
+\end{tabular}
+\end{table*}
