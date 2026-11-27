@@ -42,8 +42,19 @@ RANGES = {
            ("min\\_samples\\_leaf", "\\{1, 5, 10, 25, 50, 100\\}", "min_samples_leaf"),
            ("max\\_features", "\\{sqrt, 0.2, 0.33\\}", "max_features"),
            ("max\\_samples", "uniform $[0.05, 0.30]$", "max_samples")],
+    "lightgbm": [("learning\\_rate", "log-unif. $[0.02, 0.3]$", "learning_rate"),
+                 ("num\\_leaves", "integer $[15, 255]$", "num_leaves"),
+                 ("max\\_depth", "\\{-1, 6, 8, 12\\}", "max_depth"),
+                 ("min\\_child\\_samples", "integer $[20, 199]$", "min_child_samples"),
+                 ("subsample", "uniform $[0.6, 1.0]$", "subsample"),
+                 ("colsample\\_bytree", "uniform $[0.5, 1.0]$", "colsample_bytree"),
+                 ("reg\\_lambda", "log-unif. $[10^{-3}, 10]$", "reg_lambda")],
+    "catboost": [("learning\\_rate", "log-unif. $[0.05, 0.3]$", "learning_rate"),
+                 ("depth", "\\{4, 6, 8, 10\\}", "depth"),
+                 ("l2\\_leaf\\_reg", "log-unif. $[1, 30]$", "l2_leaf_reg"),
+                 ("bagging\\_temperature", "uniform $[0, 1]$", "bagging_temperature")],
 }
-NAMES = {"logreg": "Log. reg.", "rf": "Rand. forest"}
+NAMES = {"logreg": "Log. reg.", "rf": "Rand. forest", "lightgbm": "LightGBM", "catboost": "CatBoost"}
 
 
 def fmt(v):
