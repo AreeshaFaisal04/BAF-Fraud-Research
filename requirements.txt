@@ -7,7 +7,3 @@ matplotlib==3.10.0
 pyarrow
 tabulate
 kagglehub
-# Member 2 / Member 3 will add, e.g.:
-# lightgbm
-# catboost
-# shap

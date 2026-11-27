@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
-# Reproduces everything for Member 1 (EDA + majority, logistic regression, random forest).
-# Put Base.csv (or Base.parquet) in data/ first.
+# runs the eda and the three baseline models
+# Base.csv (or Base.parquet) has to be in data/
 set -e
 python scripts/01_eda.py
 for m in majority logreg rf; do
