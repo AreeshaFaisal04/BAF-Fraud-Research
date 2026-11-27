@@ -1,0 +1,13 @@
+{
+  "python": "3.13.18",
+  "numpy": "2.4.6",
+  "pandas": "2.2.3",
+  "scipy": "1.16.3",
+  "scikit-learn": "1.6.1",
+  "matplotlib": "3.10.0",
+  "os": "Linux-6.6.159+-x86_64-with-glibc2.39",
+  "cpu": "Intel(R) Xeon(R) CPU @ 2.20GHz",
+  "cpu_count": 2,
+  "ram_gb": 12.7,
+  "colab": true
+}

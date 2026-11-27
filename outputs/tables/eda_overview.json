@@ -1,0 +1,23 @@
+{
+  "rows": 1000000,
+  "columns": 32,
+  "fraud_cases": 11029,
+  "fraud_rate": 0.011029,
+  "months": [
+    0,
+    1,
+    2,
+    3,
+    4,
+    5,
+    6,
+    7
+  ],
+  "duplicate_rows": 0,
+  "true_nan_cells": 0,
+  "device_fraud_count_unique": [
+    0
+  ],
+  "n_numeric": 25,
+  "n_categorical": 5
+}
