@@ -16,13 +16,9 @@ Dataset: Bank Account Fraud (BAF) suite, Base variant (Jesus et al., NeurIPS 202
 ## Quickest way: Google Colab
 
 Open `notebooks/Member1_BAF_pipeline_colab.ipynb` in Colab and click **Runtime → Run all**.
-It mounts Google Drive and uses your own copy of the data if you put it in `MyDrive/BAF_ML_Project/data/`:
-either `Base.csv` on its own, or the Kaggle zip (only `Base.csv` is taken out of it; the Variant files are not
-needed). If neither is there, it downloads Base.csv from Kaggle with `kagglehub`. It then runs every step below
+First upload `Base.csv` to `MyDrive/BAF_ML_Project/data/` (only Base.csv is needed from the Kaggle zip, not the
+Variant files). The notebook mounts Google Drive, reads Base.csv from there and runs every step below
 (about an hour on the free CPU runtime). Results are saved to `MyDrive/BAF_ML_Project/outputs/`.
-
-To check that everything reproduces, tick **FORCE_RERUN** in the notebook and run all cells: the old results are
-copied to `outputs_previous_run/` and the last cell compares the two runs table by table.
 
 ## Setup (local)
 
