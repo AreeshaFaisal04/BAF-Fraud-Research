@@ -1,4 +1,5 @@
 % ===================== Section III: Dataset (Member 1) =====================
+% All numbers in this section come from outputs/tables/eda_*.csv (scripts/01_eda.py).
 \section{Dataset}
 \label{sec:dataset}
 
@@ -17,26 +18,28 @@ dataset, as required by the topic.
 
 \subsection{Size and Features}
 
-The Base dataset has \tbd{1,000,000} applications and \tbd{32} columns: the label
-\texttt{fraud\_bool}, the application \texttt{month} (0 to 7), and 30 features. Five features are
-categorical with anonymised levels (\texttt{payment\_type}, \texttt{employment\_status},
-\texttt{housing\_status}, \texttt{source}, \texttt{device\_os}); the rest are numeric or binary.
-The data contains three attributes that are treated as protected in the BAF paper: age
-(\texttt{customer\_age}, rounded to the decade), income (\texttt{income}, in deciles) and
-employment status. For the description and for the ablation study we group the features into six
-groups by what they describe (Table~\ref{tab:groups}). The application velocity group holds
-aggregated counts, such as the number of applications per hour in the last 6 hours, 24 hours and 4
-weeks, or the number of applications from the same zip code in the last 4 weeks.
+The Base dataset has 1{,}000{,}000 applications and 32 columns: the label \texttt{fraud\_bool}, the
+application \texttt{month} (0 to 7), and 30 features. Five features are categorical with anonymised
+levels (\texttt{payment\_type}, \texttt{employment\_status}, \texttt{housing\_status},
+\texttt{source}, \texttt{device\_os}); the other 25 are numeric or binary. The data contains three
+attributes that are treated as protected in the BAF paper: age (\texttt{customer\_age}, rounded to
+the decade), income (\texttt{income}, in deciles) and employment status. For the description and
+for the ablation study we group the features into six groups by what they describe
+(Table~\ref{tab:groups}). The application velocity group holds aggregated counts, such as the number
+of applications per hour in the last 6 hours, 24 hours and 4 weeks, or the number of applications
+from the same zip code in the last 4 weeks.
 
 \input{tables/feature_groups.tex}
 
 \subsection{Class Balance and Time}
 
-Only \tbd{11,029} applications (\tbd{1.10\%}) are fraudulent. Fig.~\ref{fig:months} shows the
-number of applications and the fraud rate in each month. \tbd{Describe: months differ in size from
-X to Y applications; fraud rate ranges from A\% (month M) to B\% (month N); the test months have a
-higher/lower rate than the development months.} This means that the prior probability of fraud
-itself moves over time, which is one of the reasons why a threshold chosen on earlier months may
+Only 11{,}029 applications (1.10\%) are fraudulent. Fig.~\ref{fig:months} shows the number of
+applications and the fraud rate in each month. The months differ in size, from 150{,}936
+applications in month 3 to 96{,}843 in month 7, and volume falls over the last three months. The
+fraud rate is not constant either. Within the development period it ranges from 0.87\% (month 2)
+to 1.18\% (month 5), and it rises to 1.34\% in month 6 and 1.47\% in month 7, so both test months
+contain relatively more fraud than any development month. This means that the prior probability
+of fraud itself moves over time, which is one reason why a threshold chosen on earlier months may
 not give the same false positive rate later.
 
 \begin{figure}[!t]
@@ -44,18 +47,33 @@ not give the same false positive rate later.
 \includegraphics[width=\columnwidth]{figures/eda_months.pdf}
 \caption{Applications (a) and fraud rate (b) per month in the BAF Base dataset. Months 0--5 (blue)
 are used for development and months 6--7 (orange) for testing; the dashed line is the overall fraud
-rate.}
+rate of 1.10\%.}
 \label{fig:months}
+\end{figure}
+
+The feature distributions also change from month to month. The clearest case is the application
+velocity group: the average number of applications per hour falls steadily over the eight months,
+and by month 7 the mean of \texttt{velocity\_4w} is 2.4 standard deviations below its mean over
+months 0--5 (Fig.~\ref{fig:drift}). A model that learns typical velocity values from the
+development months will therefore see values in the test months that were rare during training.
+
+\begin{figure}[!t]
+\centering
+\includegraphics[width=0.85\columnwidth]{figures/eda_drift.pdf}
+\caption{Monthly mean of the five features that move most in the test months, in units of their
+standard deviation over months 0--5. The shaded area marks the test months.}
+\label{fig:drift}
 \end{figure}
 
 \subsection{Protected Attribute: Age}
 
-Fig.~\ref{fig:age} shows the age distribution and the fraud rate per age decade. \tbd{X\%} of
-applicants are in the group older than 50 used in our fairness analysis. Their fraud rate is
-\tbd{A\%}, against \tbd{B\%} for applicants aged 50 or under. \tbd{Comment on the trend of fraud
-rate with age.} Because the older group has a higher base rate of fraud, a model can learn to rely
-on age, which would raise the false positive rate for genuine older applicants. This is what RQ3
-measures.
+Fig.~\ref{fig:age} shows the age distribution and the fraud rate per age decade. Only 4.27\% of
+applicants are in the group older than 50 that we use in the fairness analysis. Their fraud rate is
+3.47\%, against 1.00\% for applicants aged 50 or under. The fraud rate rises with every decade, from
+0.35\% for applicants in their teens to more than 3\% for every decade above 50 (the oldest decade
+has only 76 applications). Because the older group has a much higher base rate of fraud, a model can
+learn to rely on age, which would raise the false positive rate for genuine older applicants. This
+is what RQ3 measures.
 
 \begin{figure}[!t]
 \centering
@@ -69,11 +87,17 @@ are the group older than 50 used in the fairness analysis.}
 
 The file has no empty cells, but the datasheet states that in five features a value of $-1$ means
 ``missing'' and that any negative value of \texttt{intended\_balcon\_amount} is missing
-\cite{baf2022kaggle}. After decoding them, \tbd{describe rates: e.g. intended\_balcon\_amount X\%,
-prev\_address\_months\_count Y\%, \ldots, session\_length\_in\_minutes Z\%}
-(Fig.~\ref{fig:missing}a). Missingness is not random: \tbd{describe which missing values go with
-higher/lower fraud rates} (Fig.~\ref{fig:missing}b). For this reason we add a binary
-``was missing'' indicator for every such feature instead of only filling the gap.
+\cite{baf2022kaggle}. After decoding them, \texttt{intended\_balcon\_amount} is missing in 74.3\% of
+applications, \texttt{prev\_address\_months\_count} in 71.3\% and \texttt{bank\_months\_count} in
+25.4\%, while \texttt{current\_address\_months\_count}, \texttt{session\_length\_in\_minutes} and
+\texttt{device\_distinct\_emails\_8w} are each missing in less than 0.5\% of rows
+(Fig.~\ref{fig:missing}a). Missingness is not random (Fig.~\ref{fig:missing}b). Applications with a
+missing \texttt{intended\_balcon\_amount} are fraudulent 1.31\% of the time against 0.50\% when it is
+present, and the same pattern holds for \texttt{prev\_address\_months\_count} (1.42\% against
+0.31\%) and \texttt{bank\_months\_count} (1.63\% against 0.92\%). For
+\texttt{current\_address\_months\_count} it is the other way round (0.33\% against 1.11\%). For this
+reason we add a binary ``was missing'' indicator for every such feature instead of only filling the
+gap.
 
 \begin{figure}[!t]
 \centering
@@ -89,15 +113,15 @@ We made the following cleaning decisions, all of which are applied before any sp
 which use the label:
 \begin{itemize}
   \item the coded missing values described above are converted to real missing values;
-  \item \texttt{device\_fraud\_count} \tbd{takes only the value 0} in the Base file, so it carries
-        no information and is removed;
+  \item \texttt{device\_fraud\_count} takes only the value 0 in the Base file, so it carries no
+        information and is removed;
   \item \texttt{month} is used only to define the time-based split and never as a model input,
         because the test months 6 and 7 are values the model would never have seen in training;
-  \item \texttt{velocity\_6h} has \tbd{N} negative values; they lie inside the range documented in the
-        datasheet and are not described as missing, so we keep them as they are, and negative
-        \texttt{credit\_risk\_score} values are valid scores;
-  \item \tbd{there are no duplicate rows}, and the categorical features are kept as strings for
-        one-hot encoding.
+  \item \texttt{velocity\_6h} has 44 negative values (0.004\% of rows); they lie inside the range
+        documented in the datasheet and are not described as missing, so we keep them as they are.
+        The 14{,}445 negative values of \texttt{credit\_risk\_score} (1.44\%) are valid scores;
+  \item there are no duplicate rows, and the categorical features are kept as strings for one-hot
+        encoding.
 \end{itemize}
 This leaves 29 input features. All steps that learn from the data, such as imputation, encoding and
 scaling, are fitted later inside each training fold (Section~\ref{sec:method-prep}).

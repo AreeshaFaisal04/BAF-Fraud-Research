@@ -143,8 +143,9 @@ scores are shown as box plots in Section~\ref{sec:results}.
 \subsection{Hardware and Software}
 \label{sec:method-env}
 
-The experiments for the baselines and the random forest were run on a Linux machine with a 2-core
-Intel Xeon CPU at 2.30\,GHz and 7\,GB of RAM, using Python 3.13, scikit-learn 1.9.1, pandas 3.0.5,
-NumPy 2.5.3 and SciPy 1.18.1. A fixed random seed (42) is used for sampling, model training and the
-random search. The exact versions are listed in the repository's \texttt{requirements.txt}.
+The experiments for the baselines and the random forest were run on the free Google Colab CPU
+runtime (2 virtual cores of an Intel Xeon CPU at 2.20\,GHz, 12.7\,GB of RAM) with Python 3.13,
+scikit-learn 1.6.1, pandas 2.2.3, NumPy 2.4.6 and SciPy 1.16.3. A fixed random seed (42) is used for
+sampling, model training and the random search. The versions are saved by
+\texttt{scripts/00\_environment.py} and listed in the repository.
 % Members 2 and 3: add your LightGBM / CatBoost / PyTorch versions and machine if different.
