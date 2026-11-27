@@ -1,0 +1,16 @@
+\begin{table*}[!t]
+\centering
+\caption{Baselines and random forest: mean $\pm$ std over the five validation folds, and the test months with the threshold fixed on month 5. (To be merged into the main results table.)}
+\label{tab:member1-results}
+\footnotesize
+\begin{tabular}{lcccc|ccc}
+\hline
+ & \multicolumn{4}{c|}{Validation folds (months 1--5)} & \multicolumn{3}{c}{Test} \\
+Model & Recall@5\%FPR & ROC-AUC & PR-AUC & F1 & Recall M6 & Recall M7 & FPR M6--7 \\
+\hline
+Majority class & 0.000 $\pm$ 0.000 & 0.500 $\pm$ 0.000 & 0.010 $\pm$ 0.001 & 0.000 $\pm$ 0.000 & 0.000 & 0.000 & 0.00\% \\
+Logistic regression & 0.516 $\pm$ 0.020 & 0.887 $\pm$ 0.014 & 0.134 $\pm$ 0.018 & 0.161 $\pm$ 0.018 & 0.522 & 0.441 & 4.56\% \\
+Random forest & 0.503 $\pm$ 0.022 & 0.881 $\pm$ 0.018 & 0.125 $\pm$ 0.018 & 0.157 $\pm$ 0.020 & 0.521 & 0.496 & 4.81\% \\
+\hline
+\end{tabular}
+\end{table*}

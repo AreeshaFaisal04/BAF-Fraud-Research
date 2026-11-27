@@ -1,0 +1,21 @@
+\begin{table}[!t]
+\centering
+\caption{Random-search ranges (20 trials per model) and selected values.}
+\label{tab:tuning}
+\footnotesize
+\setlength{\tabcolsep}{3.5pt}
+\begin{tabular}{llll}
+\hline
+Model & Hyperparameter & Search range & Selected \\
+\hline
+Log. reg. & C & log-unif. $[10^{-3}, 10^{2}]$ & 0.00826 \\
+\hline
+Rand. forest & n\_estimators & integer $[100, 300]$ & 233 \\
+ & max\_depth & \{8, 12, 16, 20, 24\} & 20 \\
+ & min\_samples\_leaf & \{1, 5, 10, 25, 50, 100\} & 5 \\
+ & max\_features & \{sqrt, 0.2, 0.33\} & 0.2 \\
+ & max\_samples & uniform $[0.05, 0.30]$ & 0.216 \\
+\hline
+% Members 2 and 3: add LightGBM, CatBoost and MLP rows here (or regenerate with this script).
+\end{tabular}
+\end{table}
