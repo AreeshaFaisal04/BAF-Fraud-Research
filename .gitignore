@@ -9,3 +9,4 @@ paper/*.aux
 paper/*.log
 paper/*.bbl
 paper/*.blg
+outputs/tables/test_scores_*.csv

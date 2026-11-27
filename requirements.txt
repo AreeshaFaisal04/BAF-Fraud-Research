@@ -1,11 +1,12 @@
-# versions used to produce the Member 1 results (Python 3.13)
-numpy==2.5.3
-pandas==3.0.5
-scipy==1.18.1
-scikit-learn==1.9.1
-matplotlib==3.11.2
-pyarrow==26.0.1
+# versions used for the reported results (Google Colab CPU runtime, Python 3.13)
+numpy==2.4.6
+pandas==2.2.3
+scipy==1.16.3
+scikit-learn==1.6.1
+matplotlib==3.10.0
+pyarrow
 tabulate
+kagglehub
 # Member 2 / Member 3 will add, e.g.:
 # lightgbm
 # catboost

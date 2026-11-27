@@ -54,7 +54,24 @@ Random forest tuning is the slowest step (100 fits); `02_tune_cv.py` prints the 
 
 ## Results (Member 1 models)
 
-_Filled in automatically from `outputs/tables/results_table.md` after running the scripts._
+Run on the free Google Colab CPU runtime (2 cores, 12.7 GB RAM; versions in `outputs/tables/environment.json`).
+CV columns are mean ± std over the 5 forward-chaining folds (validation months 1-5, threshold set at exactly 5% FPR
+inside each month). Test columns use the model refit on months 0-4 with the threshold fixed on month 5.
+
+| model               | CV Recall@5%FPR   | CV ROC-AUC    | CV PR-AUC     | CV F1         |   Test M6 Recall@5%FPR |   Test M7 Recall@5%FPR |   Test M6-7 FPR |   Test M6-7 ROC-AUC |
+|:--------------------|:------------------|:--------------|:--------------|:--------------|-----------------------:|-----------------------:|----------------:|--------------------:|
+| Majority class      | 0.000 ± 0.000     | 0.500 ± 0.000 | 0.010 ± 0.001 | 0.000 ± 0.000 |                  0     |                  0     |           0     |               0.5   |
+| Logistic regression | 0.516 ± 0.020     | 0.887 ± 0.014 | 0.134 ± 0.018 | 0.161 ± 0.018 |                  0.522 |                  0.441 |           0.046 |               0.881 |
+| Random forest       | 0.503 ± 0.022     | 0.881 ± 0.018 | 0.125 ± 0.018 | 0.157 ± 0.020 |                  0.521 |                  0.496 |           0.048 |               0.88  |
+
+Notes:
+- The majority baseline is 98.5-99.1% accurate on every month but catches no fraud, which is why accuracy is not used.
+- Logistic regression leads random forest by 0.013 in mean CV recall, which is smaller than the fold std (~0.02),
+  so neither is clearly better on the development months. On the test months the forest holds up better in month 7
+  (0.496 vs 0.441).
+- The threshold fixed on month 5 gives a 5.6% FPR in month 6 and 3.4-3.9% in month 7, i.e. the operating point drifts.
+- Score files for every test application (`outputs/tables/test_scores_<model>.csv`, used for the fairness and error
+  analysis) are too big for GitHub; they are re-created by `scripts/03_final_test.py` (also kept in the group's Drive folder).
 
 ## Repository layout
 
