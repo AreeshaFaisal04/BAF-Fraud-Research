@@ -6,3 +6,5 @@ scikit-learn==1.6.1
 matplotlib==3.10.0
 pyarrow
 tabulate
+lightgbm==4.6.0
+catboost==1.2.10
