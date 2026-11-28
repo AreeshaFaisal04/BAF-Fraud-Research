@@ -16,5 +16,18 @@ Rand. forest & n\_estimators & integer $[100, 300]$ & 233 \\
  & max\_features & \{sqrt, 0.2, 0.33\} & 0.2 \\
  & max\_samples & uniform $[0.05, 0.30]$ & 0.216 \\
 \hline
+LightGBM & learning\_rate & log-unif. $[0.02, 0.3]$ & 0.0227 \\
+ & num\_leaves & integer $[15, 255]$ & 35 \\
+ & max\_depth & \{-1, 6, 8, 12\} & 8 \\
+ & min\_child\_samples & integer $[20, 199]$ & 154 \\
+ & subsample & uniform $[0.6, 1.0]$ & 0.605 \\
+ & colsample\_bytree & uniform $[0.5, 1.0]$ & 0.796 \\
+ & reg\_lambda & log-unif. $[10^{-3}, 10]$ & 0.0634 \\
+\hline
+CatBoost & learning\_rate & log-unif. $[0.05, 0.3]$ & 0.0756 \\
+ & depth & \{4, 6, 8, 10\} & 4 \\
+ & l2\_leaf\_reg & log-unif. $[1, 30]$ & 1.06 \\
+ & bagging\_temperature & uniform $[0, 1]$ & 0.808 \\
+\hline
 \end{tabular}
 \end{table}
