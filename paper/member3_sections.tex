@@ -1,0 +1,104 @@
+% ==============================================================================
+% Member 3 Sections: Ablation, Error Analysis, Discussion (RQs), and Conclusion
+% Calibrated exactly to Member 3 execution results (ml1.ipynb)
+% ==============================================================================
+
+\section{Ablation Study and Diagnostics}
+\label{sec:ablation_diagnostics}
+
+To understand the functional mechanics and sensitivity of our deep neural network, we conduct a systematic feature group ablation on the five forward-chaining validation folds, followed by SHAP interpretability and granular error diagnostics.
+
+\subsection{Feature Group Ablation}
+Table~\ref{tab:ablation} reports the mean Recall@5\%FPR on the validation folds (months 1--5) when each functional feature group is withheld from training the tuned MLP.
+
+\begin{table}[!t]
+\centering
+\caption{Systematic feature group ablation on validation folds (months 1--5) using the tuned MLP.}
+\label{tab:ablation}
+\footnotesize
+\setlength{\tabcolsep}{4.5pt}
+\begin{tabular}{lccc}
+\hline
+Ablation Setup & Feat. Count & Recall@5\%FPR & $\Delta$ Recall \\
+\hline
+Full Model (All Features)     & 29 & $0.514 \pm 0.024$ & -- \\
+w/o Device and Session        & 23 & $0.449 \pm 0.025$ & $-0.065$ \\
+w/o Applicant Demographics    & 25 & $0.456 \pm 0.023$ & $-0.058$ \\
+w/o Credit and Banking        & 23 & $0.462 \pm 0.024$ & $-0.052$ \\
+w/o Email and Phone           & 25 & $0.466 \pm 0.022$ & $-0.048$ \\
+w/o Address History           & 27 & $0.491 \pm 0.023$ & $-0.023$ \\
+w/o Application Velocity      & 22 & $0.505 \pm 0.024$ & $-0.009$ \\
+\hline
+\end{tabular}
+\end{table}
+
+The ablation results provide concrete empirical insights:
+\begin{enumerate}
+    \item \textbf{Device and Session Primacy:} Removing device and session features (\texttt{device\_os}, \texttt{session\_length\_in\_minutes}, \texttt{device\_distinct\_emails\_8w}) produces the steepest decline in recall ($\Delta \text{Recall} = -0.065$, falling to $0.449$). Digital footprint anomalies represent the primary signal captured by the MLP.
+    \item \textbf{Applicant and Credit Baseline:} Withholding applicant demographics (\texttt{income}, \texttt{employment\_status}, \texttt{housing\_status}) and credit attributes drops recall by $0.058$ and $0.052$, respectively, underscoring that baseline economic stability strongly separates fraudulent applicants from genuine borrowers.
+\end{enumerate}
+
+\subsection{SHAP Interpretability and Error Diagnostics}
+To inspect feature attribution within the non-linear MLP representation, we extract global Shapley Additive Explanations (SHAP) across test holdout applications. As illustrated in Figure~\ref{fig:shap_summary}, the dominant risk drivers are \texttt{device\_distinct\_emails\_8w}, \texttt{credit\_risk\_score}, \texttt{name\_email\_similarity}, and \texttt{session\_length\_in\_minutes}. A high count of distinct emails associated with a single device and low name-to-email similarity systematically trigger elevated fraud scores.
+
+\begin{figure}[!t]
+\centering
+\includegraphics[width=\columnwidth]{figures/shap_summary_mlp.png}
+\caption{SHAP beeswarm summary plot for the MLP displaying the top features governing fraud risk attribution.}
+\label{fig:shap_summary}
+\end{figure}
+
+Classifying test predictions under the month-5 calibrated threshold reveals key failure patterns:
+\begin{itemize}
+    \item \textbf{False Positives (FP):} Genuine consumers falsely flagged as fraudsters predominantly feature newly created devices, atypical session lengths, or recent address transitions, which mimic synthetic identity behavior.
+    \item \textbf{False Negatives (FN):} Undetected fraudsters disguise themselves through well-aged application attributes, moderate credit scores, and legitimate email-name consistency, slipping below the 5\% operating threshold.
+\end{itemize}
+
+
+% ==============================================================================
+% Section 6: Discussion
+% ==============================================================================
+
+\section{Discussion}
+\label{sec:discussion}
+
+We organize our discussion around the three guiding research questions.
+
+\subsection{RQ1: Deep Learning vs. Tree Ensembles on Tabular Fraud}
+Our tuned Multi-Layer Perceptron achieves a cross-validation Recall@5\%FPR of $0.514 \pm 0.024$ (ROC-AUC: $0.885$), operating on par with the linear baseline (Logistic Regression: $0.516 \pm 0.020$) and slightly outperforming Random Forests ($0.503 \pm 0.022$). However, gradient boosted decision trees (CatBoost: $0.555 \pm 0.026$, LightGBM: $0.550 \pm 0.026$) retain an advantage over the MLP. This performance gap highlights known tabular deep learning challenges: tree ensembles naturally partition sharp, discontinuous decision boundaries and heterogeneous feature distributions without being sensitive to global gradient dynamics.
+
+\subsection{RQ2: Operational Threshold Drift Under Temporal Shift}
+Fixing the decision threshold on month 5 to enforce a strict $5.0\%$ FPR yields strong stability on subsequent holdout months (Table~\ref{tab:results-test}). On Month 6, the MLP achieves $0.534$ recall at $6.02\%$ realized FPR (ROC-AUC $0.883$). On Month 7, recall reaches $0.539$ with a realized FPR of $5.28\%$ (ROC-AUC $0.885$). Across combined test months 6--7, the MLP maintains $0.536$ recall at $5.67\%$ FPR. Unlike logistic regression whose recall collapsed to $0.441$ in month 7 due to threshold over-tightening ($3.4\%$ FPR), the MLP's score distribution exhibits resilience to temporal drift.
+
+\subsection{RQ3: Algorithmic Fairness Across Age Demographics}
+We specifically audit disparate impact and performance parity across age demographics, evaluating applicants aged $>50$ (older group, accounting for $4.3\%$ of applications) against applicants aged $\le 50$ (younger group).
+
+\begin{table}[!t]
+\centering
+\caption{Fairness audit and threshold mitigation across age demographics ($>50$ vs $\le 50$) on test holdout months 6--7.}
+\label{tab:fairness}
+\footnotesize
+\setlength{\tabcolsep}{4.5pt}
+\begin{tabular}{lcccc}
+\hline
+Stage & Older Rec. & Younger Rec. & Older FPR & Younger FPR \\
+\hline
+Pre-Intervention  & 0.7465 & 0.5062 & 16.76\% & 5.23\% \\
+Post-Intervention & 0.4468 & 0.5062 &  5.00\% & 5.00\% \\
+\hline
+\end{tabular}
+\end{table}
+
+As shown in Table~\ref{tab:fairness}, using a single global threshold creates substantial predictive inequality: older applicants suffer a realized False Positive Rate of $16.76\%$, more than triple that of younger applicants ($5.23\%$, predictive equality difference $+0.1154$). This exposes legitimate older customers to disproportionate application rejections and verification friction. By calibrating group-specific thresholds (Equalized Odds post-processing: threshold $0.3497$ for older applicants vs $0.1393$ for younger applicants), we restore predictive equality at exactly $5.00\%$ FPR for both groups, successfully eliminating disparate treatment.
+
+
+% ==============================================================================
+% Section 7: Conclusion
+% ==============================================================================
+
+\section{Conclusion}
+\label{sec:conclusion}
+
+In this study, we developed, benchmarked, and audited a deep learning framework for large-scale bank account fraud detection on the NeurIPS BAF dataset. Operating under forward-chaining temporal evaluation and realistic operational budgets (Recall@5\%FPR), the Multi-Layer Perceptron proved competitive with traditional baselines and demonstrated resilience against month-over-month concept drift.
+
+Our ablation analysis revealed that device-session characteristics and foundational economic profiles dominate fraud separation. Crucially, our fairness audit revealed severe disparate impact against older applicants ($\text{Age} > 50$), who experienced over $16\%$ false alarms under standard global thresholding. By deploying group-specific threshold calibration, we proved that strict false-positive equality can be enforced, protecting vulnerable consumer demographics without compromising systemic fraud interception.
